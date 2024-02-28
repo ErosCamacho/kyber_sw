@@ -1,92 +1,120 @@
-# kyber_SW
+# NTRU 3Round
 
+2024-02-28 - Eros Camacho-Ruiz (camacho@imse-cnm.csic.es)
 
+This is the repository of the evaluation carried out in the Kyber cryptosystem that is the research starting point of the ML-KEM cryptosystem 
+in the [QUBIP](https://qubip.eu/) project.
+The idea was to create a demo to stablish a secured communication between two devices.
 
-## Getting started
+<!-- TABLE OF CONTENTS -->
+## Table of Contents
+  <ol>
+    <li><a href="#dir-struc">Directory structure</a></li>
+    <li><a href="#ip-integ">IP Integration</a></li>
+	<li><a href="#ins-demo">Installation and Use of the Demo</a></li>
+	<li><a href="#example">Example of the Demo</a></li>
+    <li><a href="#note">Note for version</a></li>
+    <li><a href="#contact">Contact</a></li>
+	<li><a href="#developers">Developers</a></li>
+  </ol>
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## Directory structure <a name="dir-struc"></a>
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+- kyber: the folder that contains the Kyber software implementation
+    - data_in: stores the input ciphertext in binary format when the demo is running.
+    - data_out: stores the output ciphertext in binary format when the demo is running.
+    - gen_keys: stores the generated keys.
+    - pub_keys: stores the public keys of the devices to connect.
+    - src: source files
+        - kyber: Kyber SW libraries	(ML-KEM)
+    - Makefile: to generate the executables for the library
+    - demo.c: main file to demo
+- README.md: this file 
 
-## Add your files
+## Installation and Use of the Demo <a name="ins-demo"></a>
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+The main idea of the Demo is to interconnect two devices and share information using PQC (Kyber) as the next figure shows. In this case, one RaspberryPi platform
+and a Pynq platform are interconnected in a local network. The two of them are going to generate the key pair (public and private keys). Then, one of them is going to recive the public key of the other one using 
+this key to encapsulate a shared secret. Then the ciphertext generated (with the information of the shared secret) is sent to the other platform that will use the 
+private key to decapsulate and extract the shared secret. 
 
+![](images/demo_kyber.jpg)
+
+1. For compilation of a specific demo:
+
+```bash
+make demo_XXXX
 ```
-cd existing_repo
-git remote add origin https://gitlab.com/hwsec/kyber_sw.git
-git branch -M main
-git push -uf origin main
+
+where `XXX` can be: `kem512, kem768, kem1024, kem512-90s, kem768-90s, kem1024-90s`. So, for example if the user wants to compile something related with the parameter set `kyber512`, 
+they must issue: `make demo_kem512`
+
+2. For the use, the program has different input variables:
+	- `-h` : Show the help.
+	- `-k` : Key generation.
+	- `-e` : Encapsulation. 
+	- `-d` : Decapsulation.
+	
+	Also it includes verbose options:
+	- `-v` : verbose level level
+		- `1`: Show only functions.
+		- `2`: Show intermediate results.
+		- `3`: Show keys.
+
+## Example of the Demo <a name="example"></a>
+
+There is an example in the Youtube channel of the [QUBIP](https://qubip.eu/) project: [Link](https://www.youtube.com/watch?v=EnJnb-Dg5hM). Also, 
+the demo video example can be downloaded in the next [link](https://saco.csic.es/index.php/s/XZKiewmqyL4JZBt). 
+
+For the example, two platforms will be used: #RPI-4 and #PYNQ-Z2. It is recommended that the verbose level be 2 in order to see all the intermediate results.
+
+1. The first step is to perform the key generation in both platforms:
+```bash
+demo_kyber509 -k -v 2
 ```
 
-## Integrate with your tools
+2. The next step is to send the public key of the #PYNQ-Z2 to the #RPI-4:
+```bash
+send_pk.sh
+```
+*Note: the configuration set in `send_pk.sh` can be modified to the final user. It has been set to my personal set-up.*
 
-- [ ] [Set up project integrations](https://gitlab.com/hwsec/kyber_sw/-/settings/integrations)
+3. The next step is to encapsulate the shared secret using the public key in the #RPI-4.
+```bash
+demo_kyber509 -e -v 2
+```
 
-## Collaborate with your team
+4. The next step is to send the ciphertext generated in the below step back to the #PYNQ-Z2:
+```bash
+send_ct.sh
+```
+*Note: the configuration set in `send_ct.sh` can be modified to the final user. It has been set to my personal set-up.*
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+5. The next step is to recover the shared secret in the #PYNQ-Z2 decapsulating:
+```bash
+demo_kyber509 -d -v 2
+```
 
-## Test and Deploy
+At the end, it will check that both platforms share the same secrets.
 
-Use the built-in continuous integration in GitLab.
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+## Note for version <a name="note"></a>
+### v. 1.0
 
-***
+* Reordered the repository structure.
+* Added a Readme file. 
 
-# Editing this README
+## Contact <a name="contact"></a>
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
+**Eros Camacho-Ruiz** - (camacho@imse-cnm.csic.es)
 
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+_Hardware Cryptography Researcher_ 
 
-## Name
-Choose a self-explaining name for your project.
+_Instituto de Microelectrónica de Sevilla (IMSE-CNM), CSIC, Universidad de Sevilla, Seville, Spain_
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+## Developers <a name="developers"></a>
+Eros Camacho-Ruiz
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+_Instituto de Microelectrónica de Sevilla (IMSE-CNM), CSIC, Universidad de Sevilla, Seville, Spain_
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
