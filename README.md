@@ -1,4 +1,4 @@
-# NTRU 3Round
+# Kyber-SW
 
 2024-02-28 - Eros Camacho-Ruiz (camacho@imse-cnm.csic.es)
 
@@ -20,7 +20,7 @@ The idea was to create a demo to stablish a secured communication between two de
 
 ## Directory structure <a name="dir-struc"></a>
 
-- kyber: the folder that contains the Kyber software implementation
+- kyber_SW: the folder that contains the Kyber software implementation
     - data_in: stores the input ciphertext in binary format when the demo is running.
     - data_out: stores the output ciphertext in binary format when the demo is running.
     - gen_keys: stores the generated keys.
@@ -66,7 +66,9 @@ they must issue: `make demo_kem512`
 There is an example in the Youtube channel of the [QUBIP](https://qubip.eu/) project: [Link](https://www.youtube.com/watch?v=EnJnb-Dg5hM). Also, 
 the demo video example can be downloaded in the next [link](https://saco.csic.es/index.php/s/XZKiewmqyL4JZBt). 
 
-For the example, two platforms will be used: #RPI-4 and #PYNQ-Z2. It is recommended that the verbose level be 2 in order to see all the intermediate results.
+For the example, two platforms will be used: #RPI-4 and #PYNQ-Z2. _It is recommended that the verbose level be 3 in order to see all the intermediate results_.
+
+***Note: For the execution, it is mandatory to activate root privileges***. 
 
 1. The first step is to perform the key generation in both platforms:
 ```bash
@@ -110,11 +112,11 @@ At the end, it will check that both platforms share the same secrets.
 
 _Hardware Cryptography Researcher_ 
 
-_Instituto de Microelectrónica de Sevilla (IMSE-CNM), CSIC, Universidad de Sevilla, Seville, Spain_
+_Instituto de Microelectrï¿½nica de Sevilla (IMSE-CNM), CSIC, Universidad de Sevilla, Seville, Spain_
 
 ## Developers <a name="developers"></a>
 Eros Camacho-Ruiz
 
-_Instituto de Microelectrónica de Sevilla (IMSE-CNM), CSIC, Universidad de Sevilla, Seville, Spain_
+_Instituto de Microelectrï¿½nica de Sevilla (IMSE-CNM), CSIC, Universidad de Sevilla, Seville, Spain_
 
 
