@@ -25,8 +25,9 @@ The idea was to create a demo to stablish a secured communication between two de
     - data_out: stores the output ciphertext in binary format when the demo is running.
     - gen_keys: stores the generated keys.
     - pub_keys: stores the public keys of the devices to connect.
-    - src: source files
-        - kyber: Kyber SW libraries	(ML-KEM)
+    - kyber: source files
+        - common: extra functions 
+        - src: Kyber SW libraries	(ML-KEM)
     - Makefile: to generate the executables for the library
     - demo.c: main file to demo
 - README.md: this file 
