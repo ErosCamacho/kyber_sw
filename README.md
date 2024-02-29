@@ -73,7 +73,7 @@ For the example, two platforms will be used: #RPI-4 and #PYNQ-Z2. _It is recomme
 
 1. The first step is to perform the key generation in both platforms:
 ```bash
-demo_kyber509 -k -v 2
+demo_kyber509 -k -v 3
 ```
 
 2. The next step is to send the public key of the #PYNQ-Z2 to the #RPI-4:
@@ -84,7 +84,7 @@ send_pk.sh
 
 3. The next step is to encapsulate the shared secret using the public key in the #RPI-4.
 ```bash
-demo_kyber509 -e -v 2
+demo_kyber509 -e -v 3
 ```
 
 4. The next step is to send the ciphertext generated in the below step back to the #PYNQ-Z2:
@@ -95,7 +95,7 @@ send_ct.sh
 
 5. The next step is to recover the shared secret in the #PYNQ-Z2 decapsulating:
 ```bash
-demo_kyber509 -d -v 2
+demo_kyber509 -d -v 3
 ```
 
 At the end, it will check that both platforms share the same secrets.
@@ -113,11 +113,11 @@ At the end, it will check that both platforms share the same secrets.
 
 _Hardware Cryptography Researcher_ 
 
-_Instituto de Microelectr�nica de Sevilla (IMSE-CNM), CSIC, Universidad de Sevilla, Seville, Spain_
+_Instituto de Microelectrónica de Sevilla (IMSE-CNM), CSIC, Universidad de Sevilla, Seville, Spain_
 
 ## Developers <a name="developers"></a>
 Eros Camacho-Ruiz
 
-_Instituto de Microelectr�nica de Sevilla (IMSE-CNM), CSIC, Universidad de Sevilla, Seville, Spain_
+_Instituto de Microelectrónica de Sevilla (IMSE-CNM), CSIC, Universidad de Sevilla, Seville, Spain_
 
 
