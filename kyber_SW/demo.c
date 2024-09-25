@@ -138,8 +138,8 @@ void main(int argc, char** argv)
 
 		if (v >= 1) {
 			printf("\n");
-			printf("\x1B[34m"); // blue
-			printf("ss: \n"); for (int i = 0; i < CRYPTO_BYTES; i++) printf("%02x", ss[i]);
+			printf("\x1B[0m"); // white
+			printf("ss: %s \n", ss);
 			printf("\x1B[0m");
 		}
 		if (v >= 2) {
